@@ -523,19 +523,12 @@
       await cargarConteos();
       const { data: user } = await sb.auth.getUser();
       $('panel-sesion').textContent = 'Sesión: ' + (user && user.user ? user.user.email : 'administrador');
-      const { data, error } = await sb
-        .from('docentes')
-        .select('id, nombre, correo, area, area_otra, creado, selecciones(color, creado)')
-        .order('creado', { ascending: false });
-      if (error) throw error;
-      estado.registros = data.map((d) => {
-        const s = Array.isArray(d.selecciones) ? d.selecciones[0] : d.selecciones;
-        return {
-          id: d.id, nombre: d.nombre, correo: d.correo,
-          area: d.area, areaTexto: d.area === 'Otra' ? 'Otra: ' + (d.area_otra || '') : d.area,
-          creado: d.creado, color: s ? s.color : null, eligio: s ? s.creado : null
-        };
-      });
+      const data = await rpc('admin_registros');
+      estado.registros = (data || []).map((d) => ({
+        id: d.id, nombre: d.nombre, correo: d.correo,
+        area: d.area, areaTexto: d.area === 'Otra' ? 'Otra: ' + (d.area_otra || '') : d.area,
+        creado: d.creado, color: d.color || null, eligio: d.eligio || null
+      }));
       pintarResumen();
       pintarTabla();
     } catch (ex) {
