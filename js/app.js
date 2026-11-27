@@ -67,7 +67,7 @@
   }
 
   // ---------------------------------------------------------------
-  // Música de fondo (archivo de audio) y sonidos de burbujas
+  // Música de fondo (archivo de audio, suena en todas las pantallas) y sonidos de burbujas
   // ---------------------------------------------------------------
   const CLAVE_SILENCIO = 'etc_silencio';
   const M = window.Musica;
@@ -86,27 +86,38 @@
     pista.volume = 0;
     pista.addEventListener('error', () => {
       pistaOk = false;
+      $('arranque').hidden = true;
       actualizarMusica();
       console.warn('No se pudo cargar la música:', C.MUSICA_ARCHIVO);
       toast('No encontré la canción en ' + C.MUSICA_ARCHIVO + '. Revisa el nombre y la carpeta.');
     });
   }
-  function fundir(destino, alTerminar) {
+  // En iPhone el navegador no deja cambiar el volumen: el fundido se corta solo
+  // a los 25 pasos y nunca se depende de él para pausar.
+  function fundir(destino) {
     clearInterval(fundido);
+    let pasos = 0;
     fundido = setInterval(() => {
+      pasos++;
       const v = pista.volume + (destino > pista.volume ? 0.04 : -0.06);
-      if ((destino > pista.volume && v >= destino) || (destino <= pista.volume && v <= destino)) {
-        pista.volume = destino; clearInterval(fundido); if (alTerminar) alTerminar();
-      } else pista.volume = Math.min(1, Math.max(0, v));
+      const llego = (destino > pista.volume && v >= destino) || (destino <= pista.volume && v <= destino);
+      try { pista.volume = llego ? destino : Math.min(1, Math.max(0, v)); } catch (e) { /* volumen fijo */ }
+      if (llego || pasos >= 25) clearInterval(fundido);
     }, 40);
   }
+  let pausaPendiente = null;
   function sonarPista(si) {
     if (!pista || !pistaOk) return;
+    clearTimeout(pausaPendiente);
     if (si) {
       if (pista.paused) pista.play().catch((e) => console.warn('El navegador bloqueó la música:', e && e.name));
       fundir(volPista);
-    } else if (!pista.paused) {
-      fundir(0, () => pista.pause());
+    } else {
+      fundir(0);
+      // Pausa real a los 0,3 s, haya o no bajado el volumen
+      pausaPendiente = setTimeout(() => {
+        if (!musicaDebeSonar()) { clearInterval(fundido); pista.pause(); }
+      }, 300);
     }
   }
   // Baja la música mientras suena un efecto
@@ -117,12 +128,12 @@
   }
 
   function musicaDebeSonar() {
-    return musicaIniciada && !silencio && !document.hidden && pantallaActual !== 'panel' && pantallaActual !== 'login';
+    return musicaIniciada && !silencio && !document.hidden;
   }
   function actualizarMusica() {
     sonarPista(musicaDebeSonar());
     const b = $('btn-sonido');
-    b.hidden = !pistaOk || !musicaIniciada || pantallaActual === 'panel' || pantallaActual === 'login';
+    b.hidden = !pistaOk || !musicaIniciada;
     b.setAttribute('aria-pressed', String(silencio));
     b.setAttribute('aria-label', silencio ? 'Activar música' : 'Silenciar música');
   }
@@ -132,13 +143,31 @@
     if (tipo === 'lleno') agacharPista(900);
     if (tipo === 'fanfarria') agacharPista(2000);
   }
-  // Los navegadores solo permiten sonido después de que la persona toca algo
-  document.addEventListener('pointerdown', (e) => {
+  // Los navegadores solo permiten sonido después de que la persona toca la pantalla.
+  // 1) Se intenta arrancar sola al abrir la app.
+  // 2) Si el navegador la bloquea, aparece "¡Toca para empezar!" y el primer toque la activa.
+  function activarConToque() {
     if (musicaIniciada) return;
-    if (!e.target.closest('button, a')) return;
     musicaIniciada = true;
+    const estabaCubierta = !$('arranque').hidden;
+    $('arranque').hidden = true;
     actualizarMusica();
-  }, true);
+    // Repite la entrada animada de la bienvenida, que quedó oculta tras el aviso
+    if (estabaCubierta && pantallaActual === 'bienvenida') setTimeout(() => ir('bienvenida'), 0);
+  }
+  ['pointerdown', 'touchstart', 'keydown'].forEach((ev) => document.addEventListener(ev, activarConToque, { capture: true, passive: true }));
+  $('btn-arranque').addEventListener('click', activarConToque);
+  if (pista && pistaOk && !silencio) {
+    pista.play().then(() => {
+      musicaIniciada = true;
+      $('arranque').hidden = true;
+      actualizarMusica();
+    }).catch(() => {
+      if (pistaOk && !musicaIniciada) $('arranque').hidden = false;
+    });
+  } else if (pista && pistaOk && silencio) {
+    musicaIniciada = true;
+  }
   $('btn-sonido').addEventListener('click', () => {
     silencio = !silencio;
     localStorage.setItem(CLAVE_SILENCIO, silencio ? '1' : '0');
@@ -584,25 +613,31 @@
         <td>${escapar(r.areaTexto)}</td>
         <td>${c ? `<span class="pastilla"><i style="background:${c.hex};${borde}"></i>${c.nombre}</span>` : '<span class="sin">Sin color</span>'}</td>
         <td class="f">${fecha(r.eligio || r.creado)}</td>
-        <td style="text-align:right">${c ? `<button class="btn-liberar" data-liberar="${r.id}">Liberar cupo</button>` : ''}</td>
+        <td class="acciones">${c ? `<button class="btn-liberar" data-liberar="${r.id}">Liberar cupo</button>` : ''}<button class="btn-eliminar" data-eliminar="${r.id}" aria-label="Eliminar el registro de ${escapar(r.nombre)}">Eliminar</button></td>
       </tr>`;
     }).join('');
   }
 
   $('tabla-cuerpo').addEventListener('click', async (e) => {
-    const b = e.target.closest('[data-liberar]');
+    const lib = e.target.closest('[data-liberar]');
+    const eli = e.target.closest('[data-eliminar]');
+    const b = lib || eli;
     if (!b) return;
-    const r = estado.registros.find((x) => x.id === b.dataset.liberar);
-    if (!r || !window.confirm(`¿Liberar el cupo de ${r.nombre}? Podrá escoger color de nuevo.`)) return;
+    const r = estado.registros.find((x) => x.id === (lib ? lib.dataset.liberar : eli.dataset.eliminar));
+    if (!r) return;
+    const pregunta = lib
+      ? `¿Liberar el cupo de ${r.nombre}?\n\nSu color queda libre y podrá escoger de nuevo.`
+      : `¿Eliminar el registro de ${r.nombre} (${r.correo})?\n\nSe borran su inscripción y su color. Esto no se puede deshacer. Si vuelve a entrar, tendrá que registrarse otra vez.`;
+    if (!window.confirm(pregunta)) return;
     b.disabled = true;
     try {
-      const res = await rpc('liberar_cupo', { p_docente: r.id });
-      if (!res.ok) throw new Error(res.error);
-      toast('Cupo liberado.');
+      const res = await rpc(lib ? 'liberar_cupo' : 'eliminar_docente', { p_docente: r.id });
+      if (!res || !res.ok) throw new Error(res && res.error);
+      toast(lib ? 'Cupo liberado.' : 'Registro eliminado.');
       cargarPanel();
     } catch (ex) {
       b.disabled = false;
-      toast('No se pudo liberar el cupo.');
+      toast(lib ? 'No se pudo liberar el cupo.' : 'No se pudo eliminar el registro. ¿Ya ejecutaste el SQL nuevo en Supabase?');
     }
   });
 
