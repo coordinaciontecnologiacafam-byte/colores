@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1E1548">
+  <title>Elige tu Color · Mejor Ciclo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+  <link rel="stylesheet" href="css/estilos.css?v=20261127d">
+</head>
+<body>
+  <div id="fondo" aria-hidden="true"></div>
+
+  <!-- 1. BIENVENIDA -->
+  <section id="s-bienvenida" class="pantalla" hidden>
+    <div class="col col-centro">
+      <div class="logo entra" aria-hidden="true"><i style="background:#2F6BFF"></i><i style="background:#FF8A1F"></i><i style="background:#22B573"></i><i style="background:#FF7EB6"></i></div>
+      <div class="cinta"><p>Se acerca la celebración de cierre de año del Mejor Ciclo</p></div>
+      <div class="entra" style="animation-delay:.5s">
+        <h1 class="titulo-app">Elige tu<br><span class="ola" style="color:#5B93FF">C</span><span class="ola" style="color:#FF5C70;animation-delay:.12s">o</span><span class="ola" style="color:#2BD98A;animation-delay:.24s">l</span><span class="ola" style="color:#FFD23F;animation-delay:.36s">o</span><span class="ola" style="color:#FF8FC4;animation-delay:.48s">r</span></h1>
+        <p class="sub centro">Escoge el color de tu equipo. ¡Cada color tiene solo 4 cupos!</p>
+        <div class="puntos" id="puntos-bienvenida" aria-hidden="true"></div>
+      </div>
+      <div class="crece"></div>
+      <div class="pila">
+        <button class="btn-grande btn-amarillo entra" style="animation-delay:.7s" data-ir="registro">
+          <span class="ico ico-oscuro"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFD23F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></span>
+          <span class="txt"><b>Soy docente</b><small>Sin contraseña · con tu correo</small></span>
+        </button>
+        <button class="btn-grande btn-oscuro entra" style="animation-delay:.8s" data-ir="login">
+          <span class="ico ico-morado"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5l-8-3Z"/></svg></span>
+          <span class="txt"><b>Soy administrador</b><small>Usuario y contraseña</small></span>
+        </button>
+      </div>
+      <p class="pie">Colegio Cafam · Área de Tecnología</p>
+    </div>
+  </section>
+
+  <!-- 2. REGISTRO / INGRESO DOCENTE -->
+  <section id="s-registro" class="pantalla" hidden>
+    <div class="col entra">
+      <div class="barra">
+        <button class="atras" data-ir="bienvenida" aria-label="Volver"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <div class="progreso"><span>Paso 1 de 2</span><div class="riel"><div style="width:50%"></div></div></div>
+      </div>
+      <h1 class="h1">¡Hola, profe!</h1>
+      <p class="sub">Tu correo institucional es tu llave: con él entras sin contraseña.</p>
+
+      <div class="tabs" role="tablist">
+        <button role="tab" id="tab-nuevo" aria-selected="true">Soy nuevo</button>
+        <button role="tab" id="tab-existente" aria-selected="false">Ya me registré</button>
+      </div>
+
+      <form id="f-nuevo" class="form" novalidate>
+        <label>Nombre completo<input id="r-nombre" type="text" autocomplete="name" placeholder="Nombres y apellidos" maxlength="120"></label>
+        <label>Correo institucional<input id="r-correo" type="email" autocomplete="email" inputmode="email" placeholder="usuario@colegio.cafam.edu.co"></label>
+        <div class="campo"><span class="etq">Tu área</span><div class="chips" id="chips-area"></div></div>
+        <label id="lbl-otra" hidden>¿Cuál es tu área?<input id="r-otra" type="text" placeholder="Escribe el nombre de tu área" maxlength="60"></label>
+        <p class="error" id="err-nuevo" role="alert"></p>
+        <button class="btn-accion" type="submit">Crear mi perfil <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E1548" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></button>
+        <p class="nota">Solo puedes registrarte una vez por correo.</p>
+      </form>
+
+      <form id="f-existente" class="form" novalidate hidden>
+        <div class="aviso-info"><span class="ico ico-morado"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 9.2-9.2"/><path d="m18 5 2 2"/><path d="m15 8 2 2"/></svg></span><span>Escribe el correo con el que te registraste para ver o continuar tu elección.</span></div>
+        <label>Correo institucional<input id="e-correo" type="email" autocomplete="email" inputmode="email" placeholder="usuario@colegio.cafam.edu.co"></label>
+        <p class="error" id="err-existente" role="alert"></p>
+        <button class="btn-accion" type="submit">Entrar</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- 3. ELEGIR COLOR -->
+  <section id="s-elegir" class="pantalla" hidden>
+    <div class="col">
+      <div class="barra entra">
+        <button class="atras" data-ir="registro" aria-label="Volver"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <div class="progreso"><span>Paso 2 de 2</span><div class="riel"><div style="width:90%"></div></div></div>
+      </div>
+      <h1 class="h1 entra" style="animation-delay:.08s">Elige tu equipo</h1>
+      <div class="escenario entra" style="animation-delay:.16s">
+        <div class="pareja" id="pareja-elegir"></div>
+        <div class="burbuja" id="burbuja"><p class="b-tit" id="burbuja-tit">¡Hola, profe!</p><p class="b-txt" id="burbuja-txt">Toca un color para conocer a su equipo.</p></div>
+      </div>
+      <div class="alerta" id="alerta-lleno" role="alert" hidden>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+        <span>Profe, este color se llenó, selecciona otro.</span>
+      </div>
+      <div class="rejilla entra" id="rejilla-colores" style="animation-delay:.24s"></div>
+      <p class="nota claro centro">Ves cuántos docentes hay en cada equipo, nunca quiénes.</p>
+      <button class="btn-accion" id="btn-confirmar" disabled>Elige un color</button>
+      <p class="error centro" id="err-elegir" role="alert"></p>
+    </div>
+  </section>
+
+  <!-- 4. CONFIRMACIÓN -->
+  <section id="s-confirmacion" class="pantalla" hidden>
+    <div id="confeti" aria-hidden="true"></div>
+    <div class="col col-centro">
+      <p class="logro entra">¡Logro desbloqueado!</p>
+      <div class="podio">
+        <svg class="rayos" id="rayos" viewBox="-150 -150 300 300" aria-hidden="true"></svg>
+        <div class="podio-luz"></div>
+        <div class="pareja grande" id="pareja-confirmar"></div>
+      </div>
+      <h1 class="titulo-equipo" id="titulo-equipo"></h1>
+      <p class="sub centro entra" id="texto-equipo" style="animation-delay:.6s">Nos vemos en la celebración de cierre del Mejor Ciclo. ¡Ven con tu color!</p>
+      <div class="crece"></div>
+      <button class="btn-accion entra" style="animation-delay:.8s" id="btn-salir-docente">Listo, salir</button>
+    </div>
+  </section>
+
+  <!-- 5. LOGIN ADMINISTRADOR -->
+  <section id="s-login" class="pantalla" hidden>
+    <div class="col entra">
+      <div class="barra"><button class="atras" data-ir="bienvenida" aria-label="Volver"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button></div>
+      <div class="escudo" aria-hidden="true"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+      <h1 class="h1 centro">Panel de control</h1>
+      <p class="sub centro">Acceso exclusivo para administradores.</p>
+      <form id="f-login" class="form" novalidate>
+        <label>Usuario<input id="l-usuario" type="text" autocomplete="username" autocapitalize="off" placeholder="Tu usuario de administrador"></label>
+        <label>Contraseña<input id="l-clave" type="password" autocomplete="current-password" placeholder="••••••••"></label>
+        <p class="error" id="err-login" role="alert"></p>
+        <button class="btn-accion" type="submit">Entrar al panel</button>
+      </form>
+      <div class="crece"></div>
+      <p class="pie">Colegio Cafam · Área de Tecnología</p>
+    </div>
+  </section>
+
+  <!-- 6. PANEL ADMINISTRADOR -->
+  <section id="s-panel" class="pantalla ancha" hidden>
+    <div class="panel entra">
+      <header class="panel-top">
+        <div class="logo chico" aria-hidden="true"><i style="background:#2F6BFF"></i><i style="background:#FF8A1F"></i><i style="background:#22B573"></i><i style="background:#FF7EB6"></i></div>
+        <div class="panel-tit"><h1>Panel de colores</h1><span id="panel-sesion">Sesión de administrador</span></div>
+        <button class="btn-chico btn-verde" id="btn-exportar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1E1548" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Exportar Excel</button>
+        <button class="btn-chico btn-oscuro" id="btn-actualizar">Actualizar</button>
+        <button class="btn-chico btn-oscuro" id="btn-salir-admin">Salir</button>
+      </header>
+      <div class="kpis">
+        <div class="kpi"><span>Docentes registrados</span><b id="k-registrados" style="color:#FFD23F">0</b></div>
+        <div class="kpi"><span>Cupos libres</span><b><em id="k-libres" style="color:#22B573">0</em> <small id="k-total">/ 40</small></b></div>
+        <div class="kpi"><span>Colores llenos</span><b><em id="k-llenos" style="color:#FF9AAA">0</em> <small>/ 10</small></b></div>
+        <div class="kpi"><span>Sin color aún</span><b id="k-sincolor" style="color:#B795FF">0</b></div>
+      </div>
+      <h2 class="h2">Ocupación por color</h2>
+      <div class="ocupacion" id="ocupacion"></div>
+      <section class="tabla-caja">
+        <div class="tabla-top">
+          <h2 class="h2">Registros</h2>
+          <label class="oculto-visual" for="buscar">Buscar docente</label>
+          <input id="buscar" type="search" placeholder="Buscar por nombre o correo">
+          <label class="oculto-visual" for="filtro-area">Filtrar por área</label>
+          <select id="filtro-area"><option value="">Todas las áreas</option></select>
+          <label class="oculto-visual" for="filtro-color">Filtrar por color</label>
+          <select id="filtro-color"><option value="">Todos los colores</option><option value="-">Sin color</option></select>
+        </div>
+        <div class="tabla-scroll">
+          <table>
+            <thead><tr><th>Docente</th><th>Correo</th><th>Área</th><th>Color</th><th>Fecha</th><th></th></tr></thead>
+            <tbody id="tabla-cuerpo"></tbody>
+          </table>
+        </div>
+        <p class="nota claro" id="tabla-vacia" hidden>No hay registros que coincidan.</p>
+        <p class="nota claro">“Liberar cupo” borra solo el color elegido: el docente sigue registrado y puede escoger de nuevo. “Eliminar” borra todo su registro.</p>
+      </section>
+    </div>
+  </section>
+
+  <div id="arranque" class="arranque" hidden>
+    <button id="btn-arranque" class="btn-arranque" type="button">
+      <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#1E1548" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <b>¡Toca para empezar!</b>
+      <small>Elige tu Color · Mejor Ciclo</small>
+    </button>
+  </div>
+
+  <button id="btn-sonido" class="btn-sonido" aria-label="Silenciar música" aria-pressed="false" hidden>
+    <svg class="si" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1E1548" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>
+    <svg class="no" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1E1548" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg>
+  </button>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="js/config.js?v=20261127d"></script>
+  <script src="js/datos.js?v=20261127d"></script>
+  <script src="js/avatar.js?v=20261127d"></script>
+  <script src="js/fondo.js?v=20261127d"></script>
+  <script src="js/musica.js?v=20261127d"></script>
+  <script src="js/app.js?v=20261127d"></script>
+</body>
+</html>
