@@ -45,6 +45,7 @@ window.DATOS = {
     { nombre: 'Educación física',   tinte: '#FF7EB6', oscuro: true  },
     { nombre: 'Castellano',         tinte: '#2F6BFF', oscuro: false },
     { nombre: 'Artes',              tinte: '#FF8A1F', oscuro: true  },
+    { nombre: 'Tecnología',         tinte: '#19C3C9', oscuro: true  },
     { nombre: 'Otra',               tinte: '#FFD23F', oscuro: true  }
   ],
 
