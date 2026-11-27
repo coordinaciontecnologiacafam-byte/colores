@@ -84,7 +84,12 @@
     pista.loop = true;
     pista.preload = 'auto';
     pista.volume = 0;
-    pista.addEventListener('error', () => { pistaOk = false; actualizarMusica(); });
+    pista.addEventListener('error', () => {
+      pistaOk = false;
+      actualizarMusica();
+      console.warn('No se pudo cargar la música:', C.MUSICA_ARCHIVO);
+      toast('No encontré la canción en ' + C.MUSICA_ARCHIVO + '. Revisa el nombre y la carpeta.');
+    });
   }
   function fundir(destino, alTerminar) {
     clearInterval(fundido);
@@ -98,7 +103,7 @@
   function sonarPista(si) {
     if (!pista || !pistaOk) return;
     if (si) {
-      if (pista.paused) pista.play().catch(() => {});
+      if (pista.paused) pista.play().catch((e) => console.warn('El navegador bloqueó la música:', e && e.name));
       fundir(volPista);
     } else if (!pista.paused) {
       fundir(0, () => pista.pause());
@@ -534,9 +539,15 @@
       pintarResumen();
       pintarTabla();
     } catch (ex) {
-      toast('No se pudieron cargar los datos. Intenta de nuevo.');
+      console.error('Panel:', ex);
+      toast('No se pudieron cargar los registros: ' + (ex && ex.message ? ex.message : 'error de conexión'));
     }
   }
+
+  // El panel se actualiza solo cada 15 segundos mientras está abierto
+  setInterval(() => {
+    if (pantallaActual === 'panel' && !document.hidden) cargarPanel();
+  }, 15000);
 
   function pintarResumen() {
     const total = estado.conteos.reduce((a, c) => a + c.cupo, 0);
