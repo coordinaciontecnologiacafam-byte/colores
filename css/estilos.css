@@ -207,6 +207,9 @@ td.f { color: var(--tenue); white-space: nowrap; }
 .pastilla { display: inline-flex; align-items: center; gap: 8px; }
 .pastilla i { width: 16px; height: 16px; border-radius: 50%; display: inline-block; }
 .sin { color: var(--tenue); font-style: italic; }
+td.acciones { text-align: right; white-space: nowrap; }
+td.acciones button + button { margin-left: 8px; }
+.btn-eliminar { min-height: 36px; padding: 0 12px; border-radius: 10px; border: 0; background: #E8344E; color: #fff; font-weight: 800; font-size: 13px; }
 .btn-liberar { min-height: 36px; padding: 0 12px; border-radius: 10px; border: 2px solid #FF9AAA; background: transparent; color: #FF9AAA; font-weight: 800; font-size: 13px; }
 
 /* ---------- Botón de música ---------- */
@@ -216,6 +219,12 @@ td.f { color: var(--tenue); white-space: nowrap; }
 .btn-sonido[aria-pressed="true"] .si { display: none; }
 .btn-sonido[aria-pressed="true"] .no { display: block; }
 @keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+/* ---------- Pantalla de arranque (activa el sonido) ---------- */
+.arranque { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; background: rgba(18, 12, 46, .82); backdrop-filter: blur(3px); padding: 24px; }
+.btn-arranque { width: 230px; height: 230px; border-radius: 50%; border: 6px solid #fff; background: var(--amarillo); color: var(--fondo); box-shadow: 0 10px 0 var(--amarillo-sombra); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; animation: latido 1.2s ease-in-out infinite; }
+.btn-arranque b { font-family: Fredoka, sans-serif; font-size: 24px; line-height: 1.1; padding: 0 18px; }
+.btn-arranque small { font-size: 13px; font-weight: 800; }
 
 /* ---------- Avisos flotantes ---------- */
 #toast { position: fixed; left: 50%; bottom: 24px; z-index: 10; transform: translateX(-50%) translateY(140%); max-width: calc(100% - 32px); padding: 14px 18px; border-radius: 16px; background: #fff; color: var(--fondo); font-weight: 800; box-shadow: 0 6px 0 var(--sombra); transition: transform .35s cubic-bezier(.3,1.5,.5,1); }
